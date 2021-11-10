@@ -7,7 +7,7 @@ window.addEventListener('load', () => {
     const camera = document.querySelector('[camera]');
     const marker = document.querySelector('a-marker');
    
-    camera.addEventListener('camera-error', () = {
+    camera.addEventListener('camera-error', () => {
         console.log("Error acessing or loading the camera.");
     })
     
