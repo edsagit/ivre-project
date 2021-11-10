@@ -1,7 +1,7 @@
 /* If you're feeling fancy you can add interactivity 
     to your site with Javascript */
 
-// console.log("Hello, world!");
+console.log("Hello, world!");
 
 window.addEventListener('load', () => {
     const camera = document.querySelector('[camera]');
