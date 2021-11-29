@@ -38,7 +38,9 @@ let markerBPM, markerBPM_Value, markerBPM_position, bpm;
 // Membrane Synth Frequency marker
 let markerFREQ, markerFREQ_Value, markerFREQ_position, freq;
 
+// Metal Synth Count marker
 let count;
+// Metal Synth Frequency marker
 let freq2;
 
 let markerVisible = { membrane: false, membraneBPM: false, membraneFREQ: false };
@@ -47,7 +49,7 @@ let counter;
 
 AFRAME.registerComponent('membrane', {
    // dependencies: ['raycaster'],  // for oculus go laser controls
-    schema: {
+/*     schema: {
         // Describe the property of the component.
         note: {
             // NOTE: type: 'string' is referring to our Aframe component's property type, not a synth preset
@@ -58,7 +60,7 @@ AFRAME.registerComponent('membrane', {
             type: 'string',
             default: '4n' // quarter note default time
           }
-    },
+    }, */
   
     init: function () {
 
@@ -102,36 +104,33 @@ AFRAME.registerComponent('membrane', {
         if (m.id == 'membrane') { loopBeat.stop(0);} // stop the beat if membrane marker is not visible
       }));
 
-      // initiate loop and initiate transport
-      loopBeat = new Tone.Loop(song, '16n');
+      // initiate loop with a repeat interval of 16n and initiate transport
+      loopBeat = new Tone.Loop(song, '16n'); 
       Tone.Transport.start();
     },
-  
-    trigger: function () {
-      // synth.triggerAttackRelease(this.data.note, this.data.duration)
-    },
-  
-    remove: function () {
-      // Do something the component or its entity is detached.
-      
-    },
-  
-    tick: function (time, timeDelta) {
 
+    tick: function (time, timeDelta) {
+      
+      // Calculations for markers membrane BPM and Frequency
       bpm = Math.abs(map(markerBPM.object3D.rotation.y, -1.5, 1.5, 40, 300)); // Map marker Y axis rotation to bpm
       freq = Math.abs(map(markerFREQ.object3D.rotation.y, -1.5, 1.5, 0, 1500)); // Map marker Y axis rotation to freq
-      freq2 = Math.abs(map(marker_Metal_FREQ.object3D.rotation.y, -1.5, 1.5, 50, 5000)); // Map marker Y axis rotation to freq
+      
+      // Calculations for markers metal Count and Frequency
       count = Math.abs(map(marker_Metal_Count.object3D.rotation.y, -1.5, 1.5, 0, 16)); // Map marker Y axis rotation to count
+      freq2 = Math.abs(map(marker_Metal_FREQ.object3D.rotation.y, -1.5, 1.5, 50, 5000)); // Map marker Y axis rotation to freq
+      
       // console.log(freq2);
 
       Tone.Transport.bpm.value = bpm; // Assign rotation value from marker to Tone BPM
-
+      
+      // Marker MembraneSynth
       markerMenbraneValue.setAttribute('value', 'Membrane'); // Assign a-text membrane value
       markerMetalValue.setAttribute('value', 'Metal'); // Assign a-text metal value
 
+      // Marker Beats per minute
       markerBPM_Value.setAttribute('value', 'BPM\n' + Math.round(bpm)); // Assign a-text BPM value
       markerBPMRing.setAttribute('theta-length', map(Math.round(bpm), 40, 300, 0, 360)); // Assign a-ring BPM theta value
-
+      // Marker Frequency
       markerFREQ_Value.setAttribute('value', 'FREQ\n' + Math.round(freq)); // Assign a-text FREQ value
       markerFREQRing.setAttribute('theta-length', map(Math.round(freq), 0, 1500, 0, 360)); // Assign a-ring FREQ theta value
     
@@ -144,17 +143,15 @@ function song(time) {
     membraneSynth.triggerAttackRelease(freq, '8n', time, 1);
   }
 
-  // if (counter%Math.round(count) === 0) {
-  //   // console.log("hello world");
-  //   plucky.triggerAttackRelease(freq2, time);
-  //   // metalSynth.triggerAttackRelease('8n', time+0.02, 1);
-  // }
+  if (counter%Math.round(count) === 0) {
+    plucky.triggerAttackRelease(freq2, time);
+    // metalSynth.triggerAttackRelease('8n', time+0.02, 1);
+  }
 
   // plucky.triggerAttack("C3", now + 1);
   // plucky.triggerAttack("C2", now + 1.5);
   // plucky.triggerAttack("C1", now + 2);
   counter = (counter+1)%16;
-  // console.log(counter);
 }
 
 function map (number, inMin, inMax, outMin, outMax) {

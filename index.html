@@ -18,37 +18,9 @@
 </head>
 
 <script>
-
-    // store visibility data in object;
-    //  can only draw line when both are visible.
-    // let markerVisible2 = { m0: false, m1: false };
-
-    console.log(markerVisible);
-
-/*     AFRAME.registerComponent('registerevents', {
-        init: function () {
-
-            
-
-            let marker = this.el;
-
-            marker.addEventListener('markerFound', function () {
-                markerVisible2[marker.id] = true;
-            });
-
-            marker.addEventListener('markerLost', function () {
-                markerVisible2[marker.id] = false;
-            });
-        }
-    }); */
-
     AFRAME.registerComponent('run', {
         init: function () {
-            // assign necessary markers 
-            this.m0 = document.querySelector("#membrane");
-            this.m1 = document.querySelector("#membraneBPM");
-            this.m2 = document.querySelector("#membraneFREQ");
-            
+                        
             // instantiate new points as vectors to hold markers positions
             markerMembrane_position = new THREE.Vector3();
             markerBPM_position = new THREE.Vector3();
@@ -117,8 +89,7 @@
 </script>
 
 <body style="margin : 0px; overflow: hidden;">
-    <a-scene vr-mode-ui="enabled: true;" renderer="logarithmicDepthBuffer: true;" embedded
-        arjs="trackingMethod: best; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+    <a-scene vr-mode-ui="enabled: true;" renderer="logarithmicDepthBuffer: true;" arjs="trackingMethod: best; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" embedded>
 
         <a-entity membrane></a-entity>
         
