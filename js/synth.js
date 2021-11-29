@@ -41,7 +41,7 @@ let count;
 let freq;
 let freq2;
 
-let markerVisible = { markerBPM: false, m2: false };
+let markerVisible = { membrane: false, membraneBPM: false, membraneFREQ: false };
 
 let counter;
 

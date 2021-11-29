@@ -23,8 +23,13 @@
     //  can only draw line when both are visible.
     let markerVisible2 = { m0: false, m1: false };
 
-    AFRAME.registerComponent('registerevents', {
+    console.log(markerVisible);
+
+/*     AFRAME.registerComponent('registerevents', {
         init: function () {
+
+            
+
             let marker = this.el;
 
             marker.addEventListener('markerFound', function () {
@@ -35,28 +40,44 @@
                 markerVisible2[marker.id] = false;
             });
         }
-    });
+    }); */
 
     AFRAME.registerComponent('run', {
         init: function () {
+            // assign necessary markers 
             this.m0 = document.querySelector("#membrane");
             this.m1 = document.querySelector("#membraneBPM");
             this.m2 = document.querySelector("#membraneFREQ");
+            
+            // instantiate new points as vectors to hold markers positions
             this.p0 = new THREE.Vector3();
             this.p1 = new THREE.Vector3();
             this.p2 = new THREE.Vector3();
-
+            
+            // line bpm geometry
             this.geometry = new THREE.Geometry();
-            this.geometry2 = new THREE.Geometry();
             this.geometry.vertices.push(new THREE.Vector3(-1, -1, -1));
             this.geometry.vertices.push(new THREE.Vector3(1, 1, 1));
+            
+            // line freq geometry
+            this.geometry2 = new THREE.Geometry();
             this.geometry2.vertices.push(new THREE.Vector3(-1, -1, -1));
             this.geometry2.vertices.push(new THREE.Vector3(1, 1, 1));
+            
+            // line (dashed) material
             this.material = new THREE.LineDashedMaterial({ color: "white", dashSize: 0.3, gapSize: 0.2 });
+            
+            // assign lines
             this.line = new THREE.Line(this.geometry, this.material);
             this.line2 = new THREE.Line(this.geometry2, this.material);
+            
+            // compute lines for bpm line to show dashed material
             this.line.computeLineDistances();
+            
+            // instantiate scene 
             let scene = document.querySelector('a-scene').object3D;
+            
+            // add previously created lines to the scene
             scene.add(this.line);
             scene.add(this.line2);
         },
@@ -66,31 +87,30 @@
             this.m0.object3D.getWorldPosition(this.p0);
             this.m1.object3D.getWorldPosition(this.p1);
             this.m2.object3D.getWorldPosition(this.p2);
+
             // line from membrane to bpm
             this.geometry.vertices[0] = this.p0;
             this.geometry.vertices[1] = this.p1;
+
             // line from membrane to freq
             this.geometry2.vertices[0] = this.p0;
             this.geometry2.vertices[1] = this.p2;
+
             // update vertices
             this.geometry.verticesNeedUpdate = true;
             this.geometry2.verticesNeedUpdate = true;
-            if (markerVisible2["membrane"] && markerVisible2["membraneBPM"]) {
+
+            // check if markers are visible in order to only draw the lines when their visibility is true
+            // line membrane bpm visibility
+            if (markerVisible["membrane"] && markerVisible["membraneBPM"]) {
                 this.line.visible = true;
-                // PRINT LINE DISTANCE between vector this.p0 and this.p1
-                // console.log(this.p0.distanceTo(this.p1));
-            }
-            else {
-                this.line.visible = false;
-            }
-            if (markerVisible2["membrane"] && markerVisible2["membraneFREQ"]) {
+                // console.log(this.p0.distanceTo(this.p1));    // PRINT LINE DISTANCE between vector this.p0 and this.p1
+            } else {this.line.visible = false;}
+            // line membrane freq visibility
+            if (markerVisible["membrane"] && markerVisible["membraneFREQ"]) {
                 this.line2.visible = true;
-                // PRINT LINE DISTANCE between vector this.p0 and this.p2
-                // console.log(this.p0.distanceTo(this.p2));
-            }
-            else {
-                this.line2.visible = false;
-            }
+                // console.log(this.p0.distanceTo(this.p2));    // PRINT LINE DISTANCE between vector this.p0 and this.p2
+            } else {this.line2.visible = false;}
         }
     });
 
@@ -101,6 +121,7 @@
         arjs="trackingMethod: best; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
 
         <a-entity membrane></a-entity>
+        
         <a-marker id="membrane" type='barcode' value='1' registerevents>
             <a-text id="membraneValue" value="" align="center" rotation="-90 0 0" position="0 0 0.65" color="#000">
             </a-text>
@@ -145,8 +166,6 @@
             <a-plane position="0 0 0" rotation="-90 0 0" material="color: pink; transparent: false; opacity: 0.25; ">
             </a-plane>
         </a-marker>
-
-
 
         <a-entity run=""></a-entity>
 
