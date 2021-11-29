@@ -68,33 +68,41 @@ AFRAME.registerComponent('membrane', {
 
       let marker = document.querySelectorAll('a-marker');
 
+      // marker membraneSynth  
       markerMembrane = document.querySelector('#membrane');
       markerMenbraneValue = document.querySelector('#membraneValue');
-
+      
+      // marker membrane BPM 
+      markerBPM = document.querySelector('#membraneBPM');
+      markerBPMValue = document.querySelector('#membraneBPMValue');
+      markerBPMRing = document.querySelector('#membraneBPMRing');
+      
+      // marker membrane FREQ
+      markerFREQ = document.querySelector('#membraneFREQ');
+      markerFREQValue = document.querySelector('#membraneFREQValue');
+      markerFREQRing = document.querySelector('#membraneFREQRing');
+      
+      // marker metalSynth
       markerMetal = document.querySelector('#metal');
       markerMetalValue = document.querySelector('#metalValue');
       marker_Metal_Count = document.querySelector('#metalCount');
       marker_Metal_FREQ = document.querySelector('#metalFreq');
 
-      markerBPM = document.querySelector('#membraneBPM');
-      markerBPMValue = document.querySelector('#membraneBPMValue');
-      markerBPMRing = document.querySelector('#membraneBPMRing');
-
-      markerFREQ = document.querySelector('#membraneFREQ');
-      markerFREQValue = document.querySelector('#membraneFREQValue');
-      markerFREQRing = document.querySelector('#membraneFREQRing');
-
+      // for each marker present in scene add even listener and trace visibility
+      // event marker found
       marker.forEach(m => m.addEventListener('markerFound', function () {
         console.log('FOUND: ' + m.id);
-        if (m.id == 'membrane') { loopBeat.start(0);}
+        markerVisible[m.id] = true;
+        if (m.id == 'membrane') { loopBeat.start(0);} // start the beat if membrane marker is visible 
       }));
-
+      // event marker lost
       marker.forEach(m => m.addEventListener('markerLost', function () {
         console.log('LOST: ' + m.id);
-        if (m.id == 'membrane') { loopBeat.stop(0);}
+        markerVisible[m.id] = false;
+        if (m.id == 'membrane') { loopBeat.stop(0);} // stop the beat if membrane marker is not visible
       }));
 
-
+      // initiate loop and initiate transport
       loopBeat = new Tone.Loop(song, '16n');
       Tone.Transport.start();
     },
@@ -112,8 +120,8 @@ AFRAME.registerComponent('membrane', {
 
       bpm = Math.abs(map(markerBPM.object3D.rotation.y, -1.5, 1.5, 40, 300)); // Map marker Y axis rotation to bpm
       freq = Math.abs(map(markerFREQ.object3D.rotation.y, -1.5, 1.5, 0, 1500)); // Map marker Y axis rotation to freq
-      freq2 = Math.abs(map(marker_Metal_FREQ.object3D.rotation.y, -1.5, 1.5, 50, 5000));// Map marker Y axis rotation to freq
-      count = Math.abs(map(marker_Metal_Count.object3D.rotation.y, -1.5, 1.5, 0, 16));
+      freq2 = Math.abs(map(marker_Metal_FREQ.object3D.rotation.y, -1.5, 1.5, 50, 5000)); // Map marker Y axis rotation to freq
+      count = Math.abs(map(marker_Metal_Count.object3D.rotation.y, -1.5, 1.5, 0, 16)); // Map marker Y axis rotation to count
       // console.log(freq2);
 
       Tone.Transport.bpm.value = bpm; // Assign rotation value from marker to Tone BPM
@@ -127,23 +135,20 @@ AFRAME.registerComponent('membrane', {
       markerFREQValue.setAttribute('value', 'FREQ\n' + Math.round(freq)); // Assign a-text FREQ value
       markerFREQRing.setAttribute('theta-length', map(Math.round(freq), 0, 1500, 0, 360)); // Assign a-ring FREQ theta value
     
-
-    
     },
 });
 
 function song(time) {
   
-  if (counter%8 === 0) {
+  if (counter%16 === 0) {
     membraneSynth.triggerAttackRelease(freq, '8n', time, 1);
-    
   }
 
-  if (counter%Math.round(count) === 0) {
-    // console.log("hello world");
-    plucky.triggerAttackRelease(freq2, time);
-    // metalSynth.triggerAttackRelease('8n', time+0.02, 1);
-  }
+  // if (counter%Math.round(count) === 0) {
+  //   // console.log("hello world");
+  //   plucky.triggerAttackRelease(freq2, time);
+  //   // metalSynth.triggerAttackRelease('8n', time+0.02, 1);
+  // }
 
   // plucky.triggerAttack("C3", now + 1);
   // plucky.triggerAttack("C2", now + 1.5);
