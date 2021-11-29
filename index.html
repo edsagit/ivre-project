@@ -52,9 +52,10 @@
             this.geometry.vertices.push(new THREE.Vector3(1, 1, 1));
             this.geometry2.vertices.push(new THREE.Vector3(-1, -1, -1));
             this.geometry2.vertices.push(new THREE.Vector3(1, 1, 1));
-            this.material = new THREE.LineBasicMaterial({ color: 0xFFFFFF });
+            this.material = new THREE.LineDashedMaterial({ color: "white", dashSize: 0.3, gapSize: 0.2 });
             this.line = new THREE.Line(this.geometry, this.material);
             this.line2 = new THREE.Line(this.geometry2, this.material);
+            this.line.computeLineDistances();
             let scene = document.querySelector('a-scene').object3D;
             scene.add(this.line);
             scene.add(this.line2);
@@ -99,27 +100,49 @@
     <a-scene vr-mode-ui="enabled: true;" renderer="logarithmicDepthBuffer: true;" embedded
         arjs="trackingMethod: best; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
 
-
-        <a-marker id="membrane" type='barcode' value='1' membrane registerevents>
-            <a-text id="membraneValue" value="" align="center" rotation="-90 0 0" position="0 0 0"></a-text>
-            <a-plane position="0 0 0" rotation="-90 0 0" material="color: red; transparent: false; opacity: 0.10; ">
+        <a-entity membrane></a-entity>
+        <a-marker id="membrane" type='barcode' value='1' registerevents>
+            <a-text id="membraneValue" value="" align="center" rotation="-90 0 0" position="0 0 0.65" color="#000">
+            </a-text>
+            <a-plane position="0 0 0" rotation="-90 0 0" material="color: teal; transparent: false; opacity: 0.25; ">
             </a-plane>
         </a-marker>
 
         <a-marker id="membraneBPM" type='barcode' value='2' registerevents>
             <a-ring id="membraneBPMRing" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
-                theta-length=""></a-ring>
+                position="0 0.01 0" theta-length=""></a-ring>
             <a-text id="membraneBPMValue" value="" align="center" rotation="-90 0 0" position="0 0 0"></a-text>
-            <a-plane position="0 0 0" rotation="-90 0 0" material="color: black; transparent: false; opacity: 0.10; ">
+            <a-plane position="0 0 0" rotation="-90 0 0" material="color: blue; transparent: false; opacity: 0.25; ">
             </a-plane>
 
         </a-marker>
 
         <a-marker id="membraneFREQ" type='barcode' value='3' registerevents>
             <a-ring id="membraneFREQRing" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
-                theta-length=""></a-ring>
+                position="0 0.01 0" theta-length=""></a-ring>
             <a-text id="membraneFREQValue" value="" align="center" rotation="-90 0 0" position="0 0 0"></a-text>
-            <a-plane position="0 0 0" rotation="-90 0 0" material="color: green; transparent: false; opacity: 0.10; ">
+            <a-plane position="0 0 0" rotation="-90 0 0" material="color: green; transparent: false; opacity: 0.25; ">
+            </a-plane>
+        </a-marker>
+
+        <a-marker id="metal" type='barcode' value='4' registerevents>
+            <a-text id="metalValue" value="" align="center" rotation="-90 0 0" position="0 0 0.65" color="#000">
+            </a-text>
+            <a-plane position="0 0 0" rotation="-90 0 0" material="color: red; transparent: false; opacity: 0.25; ">
+            </a-plane>
+        </a-marker>
+
+        <a-marker id="metalCount" type='barcode' value='5' registerevents>
+            <a-text id="metalCountValue" value="" align="center" rotation="-90 0 0" position="0 0 0.65" color="#000">
+            </a-text>
+            <a-plane position="0 0 0" rotation="-90 0 0" material="color: purple; transparent: false; opacity: 0.25; ">
+            </a-plane>
+        </a-marker>
+
+        <a-marker id="metalFreq" type='barcode' value='6' registerevents>
+            <a-text id="metalFreqValue" value="" align="center" rotation="-90 0 0" position="0 0 0.65" color="#000">
+            </a-text>
+            <a-plane position="0 0 0" rotation="-90 0 0" material="color: pink; transparent: false; opacity: 0.25; ">
             </a-plane>
         </a-marker>
 
