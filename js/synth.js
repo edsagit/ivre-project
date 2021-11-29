@@ -30,15 +30,15 @@ const metalSynth = new Tone.MetalSynth(
     }          
 ).toMaster();
 
-let markerBPM;
-let markerBPMValue;
-let bpm;
+let markerMembrane_position;
 
-let markerFREQ;
-let markerFREQValue;
+// Membrane Synth BPM marker
+let markerBPM, markerBPM_Value, markerBPM_position, bpm;
+
+// Membrane Synth Frequency marker
+let markerFREQ, markerFREQ_Value, markerFREQ_position, freq;
 
 let count;
-let freq;
 let freq2;
 
 let markerVisible = { membrane: false, membraneBPM: false, membraneFREQ: false };
@@ -74,12 +74,12 @@ AFRAME.registerComponent('membrane', {
       
       // marker membrane BPM 
       markerBPM = document.querySelector('#membraneBPM');
-      markerBPMValue = document.querySelector('#membraneBPMValue');
+      markerBPM_Value = document.querySelector('#membraneBPMValue');
       markerBPMRing = document.querySelector('#membraneBPMRing');
       
       // marker membrane FREQ
       markerFREQ = document.querySelector('#membraneFREQ');
-      markerFREQValue = document.querySelector('#membraneFREQValue');
+      markerFREQ_Value = document.querySelector('#membraneFREQValue');
       markerFREQRing = document.querySelector('#membraneFREQRing');
       
       // marker metalSynth
@@ -129,10 +129,10 @@ AFRAME.registerComponent('membrane', {
       markerMenbraneValue.setAttribute('value', 'Membrane'); // Assign a-text membrane value
       markerMetalValue.setAttribute('value', 'Metal'); // Assign a-text metal value
 
-      markerBPMValue.setAttribute('value', 'BPM\n' + Math.round(bpm)); // Assign a-text BPM value
+      markerBPM_Value.setAttribute('value', 'BPM\n' + Math.round(bpm)); // Assign a-text BPM value
       markerBPMRing.setAttribute('theta-length', map(Math.round(bpm), 40, 300, 0, 360)); // Assign a-ring BPM theta value
 
-      markerFREQValue.setAttribute('value', 'FREQ\n' + Math.round(freq)); // Assign a-text FREQ value
+      markerFREQ_Value.setAttribute('value', 'FREQ\n' + Math.round(freq)); // Assign a-text FREQ value
       markerFREQRing.setAttribute('theta-length', map(Math.round(freq), 0, 1500, 0, 360)); // Assign a-ring FREQ theta value
     
     },

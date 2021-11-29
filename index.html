@@ -50,9 +50,9 @@
             this.m2 = document.querySelector("#membraneFREQ");
             
             // instantiate new points as vectors to hold markers positions
-            this.p0 = new THREE.Vector3();
-            this.p1 = new THREE.Vector3();
-            this.p2 = new THREE.Vector3();
+            markerMembrane_position = new THREE.Vector3();
+            markerBPM_position = new THREE.Vector3();
+            markerFREQ_position = new THREE.Vector3();
             
             // line bpm geometry
             this.geometry = new THREE.Geometry();
@@ -84,17 +84,17 @@
 
         tick: function (time, deltaTime) {
             // get points positions
-            markerMembrane.object3D.getWorldPosition(this.p0);
-            markerBPM.object3D.getWorldPosition(this.p1);
-            markerFREQ.object3D.getWorldPosition(this.p2);
+            markerMembrane.object3D.getWorldPosition(markerMembrane_position);
+            markerBPM.object3D.getWorldPosition(markerBPM_position);
+            markerFREQ.object3D.getWorldPosition(markerFREQ_position);
 
             // line from membrane to bpm
-            this.geometry.vertices[0] = this.p0;
-            this.geometry.vertices[1] = this.p1;
+            this.geometry.vertices[0] = markerMembrane_position;
+            this.geometry.vertices[1] = markerBPM_position;
 
             // line from membrane to freq
-            this.geometry2.vertices[0] = this.p0;
-            this.geometry2.vertices[1] = this.p2;
+            this.geometry2.vertices[0] = markerMembrane_position;
+            this.geometry2.vertices[1] = markerFREQ_position;
 
             // update vertices
             this.geometry.verticesNeedUpdate = true;
