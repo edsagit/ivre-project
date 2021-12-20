@@ -9,12 +9,24 @@
 //     }
 // }).toMaster();
 
-const now = Tone.now();
-const plucky = new Tone.PluckSynth().toDestination();
+// const now = Tone.now();
+// const plucky = new Tone.PluckSynth().toDestination();
 
-let loopBeat;
+var loopBeat;
+
+const autoFilter = new Tone.AutoFilter("4n").toDestination();
+const toneOscillator = new Tone.Oscillator(400, "sine").connect(autoFilter).toDestination();
+
+// Membrane Synth
 
 const membraneSynth = new Tone.MembraneSynth().toMaster();
+// Membrane Synth BPM marker
+// let markerMembraneBpm, markerMembraneBpmValue, bpm;
+
+// Membrane Synth Frequency marker
+// let markerMembraneFreq, markerMembraneFreqValue, freq;
+
+// Metal Synth
 const metalSynth = new Tone.MetalSynth(
   {
     frequency : 250 ,
@@ -28,31 +40,15 @@ const metalSynth = new Tone.MetalSynth(
     resonance : 8000 ,
     octaves : 0.5
     }          
-).toMaster();
+).toDestination();
 
-const autoFilter = new Tone.AutoFilter("4n").toMaster();
-const toneOscillator = new Tone.Oscillator(400, "sine").connect(autoFilter).toMaster();
+// Metal Synth Count and Metal Synth Frequency markers
+var metalCount, metalDecay;
 
-// let markerMembrane_position;
+// Oscillator Count and Frequency markers
+var oscillatorCount, oscillatorFrequency;
 
-// Membrane Synth
-// Membrane Synth BPM marker
-// let markerMembraneBpm, markerMembraneBpmValue, bpm;
-
-// Membrane Synth Frequency marker
-// let markerMembraneFreq, markerMembraneFreqValue, freq;
-
-// Metal Synth
-// Metal Synth Count marker
-let count;
-// Metal Synth Frequency marker
-let metalFreq;
-
-let oscillatorCount;
-// oscillator frequency
-let oscillatorFrequency;
-
-let markerVisible = { 
+var markerVisible = { 
    markerMembrane: false,
    markerMembraneBpm: false,
    markerMembraneFreq: false,
@@ -61,7 +57,7 @@ let markerVisible = {
    markerMetalFreq: false
   };
 
-let counter;
+var counter;
 
 AFRAME.registerComponent('membrane', {
    // dependencies: ['raycaster'],  // for oculus go laser controls
@@ -80,11 +76,15 @@ AFRAME.registerComponent('membrane', {
   
     init: function () {
 
+      membraneSynth.volume.value = -Infinity;
+      metalSynth.volume.value = -Infinity;
+      toneOscillator.volume.value = -Infinity;
+
       counter = 0;
 
       // console.log(this.data.duration);
 
-      let marker = document.querySelectorAll('a-marker');
+      var markers = document.querySelectorAll('a-marker');
 
       // marker membrane
       // marker 
@@ -117,6 +117,7 @@ AFRAME.registerComponent('membrane', {
       markerMetalCountValue = document.querySelector('#metalCountValue');
       // marker Count ring
       markerMetalCountRing = document.querySelector('#metalCountRing');
+      
       // marker Freq
       markerMetalDecay = document.querySelector('#metalDecay');
       // marker Freq text
@@ -147,39 +148,42 @@ AFRAME.registerComponent('membrane', {
 
       // for each marker present in scene add even listener and trace visibility
       // event marker found
-      marker.forEach(m => m.addEventListener('markerFound', function () {
+      markers.forEach(m => m.addEventListener('markerFound', function () {
         console.log('FOUND: ' + m.id);
         markerVisible[m.id] = true;
-        if (m.id == 'membrane') { loopBeat.start(0);} // start the beat if membrane marker is visible 
+        if (m.id == 'membrane') {membraneSynth.volume.value = 0;} // start the beat if membrane marker is visible 
+        if (m.id == 'metal') {metalSynth.volume.value = 0;} // start the beat if membrane marker is visible 
+        if (m.id == 'oscillator') {toneOscillator.volume.value = 0;} // start the beat if membrane marker is visible 
       }));
       // event marker lost
-      marker.forEach(m => m.addEventListener('markerLost', function () {
+      markers.forEach(m => m.addEventListener('markerLost', function () {
         console.log('LOST: ' + m.id);
         markerVisible[m.id] = false;
-        if (m.id == 'membrane') { loopBeat.stop(0);} // stop the beat if membrane marker is not visible
+        if (m.id == 'membrane') {membraneSynth.volume.value = -Infinity;} // stop the beat if membrane marker is not visible
+        if (m.id == 'metal') {metalSynth.volume.value = -Infinity;} // stop the beat if membrane marker is not visible
+        if (m.id == 'oscillator') {toneOscillator.volume.value = -Infinity;} // stop the beat if membrane marker is not visible
       }));
 
       // initiate loop with a repeat interval of 16n and initiate transport
       loopBeat = new Tone.Loop(song, '16n'); 
       Tone.Transport.start();
-      // toneOscillator.start();
-
+      toneOscillator.start();
+      loopBeat.start(0);
     },
 
     tick: function (time, timeDelta) {
-      
+
       // Calculations for markers membrane BPM and Frequency
-      bpm = Math.abs(map(markerMembraneBpm.object3D.rotation.y, -1.5, 1.5, 40, 300)); // Map marker Y axis rotation to bpm
-      membraneFreq = Math.abs(map(markerMembraneFreq.object3D.rotation.y, -1.5, 1.5, 0, 1500)); // Map marker Y axis rotation to freq
+      bpm = Math.abs(map(markerMembraneBpm.object3D.rotation.y, -1.2, 1.2, 40, 300)); // Map marker Y axis rotation to bpm
+      membraneFreq = Math.abs(map(markerMembraneFreq.object3D.rotation.y, -1.2, 1.2, 20, 200)); // Map marker Y axis rotation to freq
       
       // Calculations for markers metal Count and Frequency
-      count = Math.abs(map(markerMetalCount.object3D.rotation.y, -1.5, 1.5, 0, 16)); // Map marker Y axis rotation to count
-      metalFreq = Math.abs(map(markerMetalDecay.object3D.rotation.y, -1.5, 1.5, 0, 3)); // Map marker Y axis rotation to freq
+      metalCount = Math.abs(map(markerMetalCount.object3D.rotation.y, -1.2, 1.2, 0, 16)); // Map marker Y axis rotation to count
+      metalDecay = Math.abs(map(markerMetalDecay.object3D.rotation.y, -1.2, 1.2, 0, 3)); // Map marker Y axis rotation to freq
 
       // Calculations for markers oscillator frequency and
-      // count = Math.abs(map(markerMetalCount.object3D.rotation.y, -1.5, 1.5, 0, 16)); // Map marker Y axis rotation to count
-      oscillatorFrequency = Math.abs(map(markerOscillatorFreq.object3D.rotation.y, -1.5, 1.5, 0, 1000)); // Map marker Y axis rotation to freq
-      oscillatorCount = Math.abs(map(markerOscillatorCount.object3D.rotation.y, -1.5, 1.5, 0, 16)); // Map marker Y axis rotation to freq
+      oscillatorFrequency = Math.abs(map(markerOscillatorFreq.object3D.rotation.y, -1.2, 1.2, 0, 1000)); // Map marker Y axis rotation to freq
+      oscillatorCount = Math.abs(map(markerOscillatorCount.object3D.rotation.y, -1.2, 1.2, 0, 16)); // Map marker Y axis rotation to freq
       
       // console.log(metalFreq);
 
@@ -191,7 +195,7 @@ AFRAME.registerComponent('membrane', {
 
       // marker bpm
       // set marker text
-      markerMembraneBpmValue.setAttribute('value', 'BPM\n' + Math.round(bpm)); 
+      markerMembraneBpmValue.setAttribute('value', 'BPM: ' + Math.round(bpm)); 
       // set a-ring bpm theta value
       markerMembraneBpmRing.setAttribute('theta-length', map(Math.round(bpm), 40, 300, 0, 360)); 
 
@@ -199,7 +203,7 @@ AFRAME.registerComponent('membrane', {
       // set marker text
       markerMembraneFreqValue.setAttribute('value', 'FREQ\n' + Math.round(membraneFreq)); 
       // set a-ring freq theta value
-      markerMembraneFreqRing.setAttribute('theta-length', map(Math.round(membraneFreq), 0, 1500, 0, 360)); 
+      markerMembraneFreqRing.setAttribute('theta-length', map(Math.round(membraneFreq), 20, 200, 0, 360)); 
 
 
       // marker metal synth
@@ -208,15 +212,15 @@ AFRAME.registerComponent('membrane', {
 
       // marker count
       // set marker text
-      markerMetalCountValue.setAttribute('value', 'COUNT\n' + Math.round(count));
+      markerMetalCountValue.setAttribute('value', 'COUNT\n' + Math.round(metalCount));
       // set marker ring
-      markerMetalCountRing.setAttribute('theta-length', map(Math.round(count), 0, 16, 0, 360)); 
+      markerMetalCountRing.setAttribute('theta-length', map(Math.round(metalCount), 0, 16, 0, 360)); 
 
       // marker decay
       // set marker text
-      markerMetalDecayValue.setAttribute('value', 'DECAY\n' + Math.round(metalFreq));
+      markerMetalDecayValue.setAttribute('value', 'DECAY\n' + Math.round(metalDecay));
       // set marker ring
-      markerMetalDecayRing.setAttribute('theta-length', map(metalFreq, 0, 3, 0, 360)); 
+      markerMetalDecayRing.setAttribute('theta-length', map(metalDecay, 0, 3, 0, 360)); 
 
 
       // marker oscillator
@@ -234,22 +238,24 @@ AFRAME.registerComponent('membrane', {
 });
 
 function song(time) {
-  toneOscillator.start();
-  toneOscillator.type = "sine";
+
+  toneOscillator.type = "sine2";
   toneOscillator.frequency.value = oscillatorFrequency;
   // toneOscillator.frequency.rampTo = (oscillatorFrequency+ 200, 10);
 
-  if (counter%16 != 1) {
-    membraneSynth.triggerAttackRelease(membraneFreq, '8n', time, 1);
+  membraneSynth.triggerAttackRelease(membraneFreq, '8n', time, 1);
+
+  if (counter%16 != 2) {
+    
   }
 
-  if (counter%Math.round(count) === 0) {
-    metalSynth.envelope.decay = metalFreq;
+  if (counter%Math.round(metalCount) === 0) {
+    metalSynth.envelope.decay = metalDecay;
     metalSynth.triggerAttack('32n', time, 1);
   }
 
   if (counter%Math.round(oscillatorCount) === 0) {
-    toneOscillator.type = "sine2";
+    // toneOscillator.type = "sine2";
     // plucky.triggerAttack(300, time + 0.25);
     // plucky.triggerAttack(250, time + 0.50);
     // plucky.triggerAttack(200, time + 0.75);
