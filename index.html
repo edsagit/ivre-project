@@ -12,7 +12,7 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <script src="js/Tone.js"></script>
     <script src="js/synth.js"></script>
-    <script src="js/lines.js"></script>
+    <!-- <script src="js/lines.js"></script> -->
 </head>
 
 <body style="margin : 0px; overflow: hidden;">
@@ -23,22 +23,23 @@
         <a-entity membrane></a-entity>
 
         <!-- MEMBRANE -->
-        <a-marker id="membrane" type='barcode' value='1' registerevents>
+        <a-marker id="markerMembrane" type='barcode' value='1' registerevents>
             <!-- marker text -->
-            <a-text id="membraneValue" value="" align="center" rotation="-90 0 0" position="0 0 0.7" color="#000">
+            <a-text id="markerMembraneText" value="" align="center" rotation="-90 0 0" position="0 0 0.7" color="#000">
             </a-text>
             <!-- marker plane -->
             <a-plane position="0 0 0" rotation="-90 0 0" material="color: blue; transparent: false; opacity: 0.25; ">
             </a-plane>
         </a-marker>
 
-        <!-- MEMBRANE BPM -->
-        <a-marker id="membraneBPM" type='barcode' value='2' registerevents>
+
+        <a-marker id="markerMembraneFunction" type='barcode' value='2' registerevents>
             <!-- marker ring -->
-            <a-ring id="membraneBPMRing" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
-                position="0 0.01 0" theta-length=""></a-ring>
+            <!-- <a-ring id="markerMembraneFunction" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
+                position="0 0.01 0" theta-length=""></a-ring> -->
             <!-- marker text -->
-            <a-text id="membraneBPMValue" value="" align="center" rotation="-90 0 0" position="0 0 0.7" color="#000">
+            <a-text id="markerMembraneFunctionText" value="" align="center" rotation="-90 0 0" position="0 0 0.7"
+                color="#000">
             </a-text>
             <!-- marker plane -->
             <a-plane position="0 0 0" rotation="-90 0 0" material="color: teal; transparent: false; opacity: 0.25; ">
@@ -46,81 +47,15 @@
 
         </a-marker>
 
-        <!-- MEMBRANE FREQ -->
-        <a-marker id="membraneFREQ" type='barcode' value='3' registerevents>
+        <a-marker id="markerMembraneValue" type='barcode' value='3' registerevents>
             <!-- marker ring -->
-            <a-ring id="membraneFREQRing" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
+            <a-ring id="markerMembraneValueRing" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
                 position="0 0.01 0" theta-length=""></a-ring>
             <!-- marker text -->
-            <a-text id="membraneFREQValue" value="" align="center" rotation="-90 0 0" position="0 0 0"></a-text>
+            <a-text id="markerMembraneValueText" value="" align="center" rotation="-90 0 0" position="0 0 0.7"
+                color="#000"></a-text>
             <!-- marker plane -->
             <a-plane position="0 0 0" rotation="-90 0 0" material="color: teal; transparent: false; opacity: 0.25; ">
-            </a-plane>
-        </a-marker>
-
-        <!-- METAL -->
-        <a-marker id="metal" type='barcode' value='4' registerevents>
-            <!-- marker text -->
-            <a-text id="metalValue" value="" align="center" rotation="-90 0 0" position="0 0 0.7" color="#000">
-            </a-text>
-            <!-- marker plane -->
-            <a-plane position="0 0 0" rotation="-90 0 0" material="color: red; transparent: false; opacity: 0.25; ">
-            </a-plane>
-        </a-marker>
-        <!-- METAL COUNT -->
-        <a-marker id="metalCount" type='barcode' value='5' registerevents>
-            <!-- marker ring -->
-            <a-ring id="metalCountRing" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
-                position="0 0.01 0" theta-length=""></a-ring>
-            <!-- marker text -->
-            <a-text id="metalCountValue" value="" align="center" rotation="-90 0 0" position="0 0 0"></a-text>
-            <!-- marker plane -->
-            <a-plane position="0 0 0" rotation="-90 0 0" material="color: purple; transparent: false; opacity: 0.25; ">
-            </a-plane>
-        </a-marker>
-
-        <!-- METAL FREQ -->
-        <a-marker id="metalDecay" type='barcode' value='6' registerevents>
-            <!-- marker ring -->
-            <a-ring id="metalDecayRing" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
-                position="0 0.01 0" theta-length=""></a-ring>
-            <!-- marker text -->
-            <a-text id="metalDecayValue" value="" align="center" rotation="-90 0 0" position="0 0 0"></a-text>
-            <!-- marker plane -->
-            <a-plane position="0 0 0" rotation="-90 0 0" material="color: purple; transparent: false; opacity: 0.25; ">
-            </a-plane>
-        </a-marker>
-
-        <!-- OSCILLATOR -->
-        <a-marker id="oscillator" type='barcode' value='8' registerevents>
-            <!-- marker text -->
-            <a-text id="oscillatorValue" value="" align="center" rotation="-90 0 0" position="0 0 0.7" color="#000">
-            </a-text>
-            <!-- marker plane -->
-            <a-plane position="0 0 0" rotation="-90 0 0" material="color: green; transparent: false; opacity: 0.25; ">
-            </a-plane>
-        </a-marker>
-        <!-- OSCILLATOR X -->
-        <a-marker id="oscillatorFreq" type='barcode' value='9' registerevents>
-            <!-- marker ring -->
-            <a-ring id="oscillatorFreqRing" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
-                position="0 0.01 0" theta-length=""></a-ring>
-            <!-- marker text -->
-            <a-text id="oscillatorFreqValue" value="" align="center" rotation="-90 0 0" position="0 0 0"></a-text>
-            <!-- marker plane -->
-            <a-plane position="0 0 0" rotation="-90 0 0" material="color: yellow; transparent: false; opacity: 0.25; ">
-            </a-plane>
-        </a-marker>
-
-        <!-- OSCILLATOR Y -->
-        <a-marker id="oscillatorCount" type='barcode' value='10' registerevents>
-            <!-- marker ring -->
-            <a-ring id="oscillatorCountRing" color="white" radius-inner="0.5" radius-outer="0.6" rotation="-90 0 0"
-                position="0 0.01 0" theta-length=""></a-ring>
-            <!-- marker text -->
-            <a-text id="oscillatorCountValue" value="" align="center" rotation="-90 0 0" position="0 0 0"></a-text>
-            <!-- marker plane -->
-            <a-plane position="0 0 0" rotation="-90 0 0" material="color: yellow; transparent: false; opacity: 0.25; ">
             </a-plane>
         </a-marker>
 
